@@ -12,7 +12,7 @@ jobs:
         run: |
           mkdir -p roborazzi pr
           printf 'ATTACKER-CONTROLLED-FILE-CONTENT-1337\n' > roborazzi/pwn_compare.png
-          echo "${{ github.event.number }}" > pr/NR
+          echo "2" > pr/NR
       - uses: actions/upload-artifact@v4
         with:
           name: diff-vs-base-branch
