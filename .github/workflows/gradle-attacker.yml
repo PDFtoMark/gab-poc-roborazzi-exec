@@ -1,0 +1,42 @@
+name: SDK Gradle Build and Dependencies
+on:
+  pull_request:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  sdk-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Forge dependency graph snapshot for main
+        run: |
+          mkdir -p dependency-graph-reports
+          cat > dependency-graph-reports/forged.json <<'JSON'
+          {
+            "version": 0,
+            "scanned": "2026-11-08T00:00:00Z",
+            "sha": "889f273ecaa67c3ffc4cba97ecdc48933d1156a0",
+            "ref": "refs/heads/main",
+            "job": {"correlator": "SDK Gradle Build and Dependencies-sdk-build", "id": "1"},
+            "detector": {"name": "gradle", "version": "9.0.0", "url": "https://example.invalid"},
+            "manifests": {
+              "build.gradle.kts": {
+                "name": "build.gradle.kts",
+                "file": {"source_location": "build.gradle.kts"},
+                "resolved": {
+                  "pkg:npm/attacker-injected@6.6.6": {
+                    "package_url": "pkg:npm/attacker-injected@6.6.6",
+                    "relationship": "direct",
+                    "scope": "runtime",
+                    "dependencies": []
+                  }
+                }
+              }
+            }
+          }
+          JSON
+          cat dependency-graph-reports/forged.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dependency-graph_forged
+          path: .
